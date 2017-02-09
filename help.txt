@@ -1,0 +1,6 @@
+This is the help page for CLI ToDo app
+--------------------------------------
+	Help		Show help section
+	add "task"	Add a new task
+	list		show all tasks
+	reset		delete all tasks
