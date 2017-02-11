@@ -4,8 +4,8 @@ var command = options[0];
 var string = options[1];
 var altString = options[2];
 
-var tasks = fs.readFileSync('./tasks.txt','utf-8');
 var help = fs.readFileSync('./help.txt','utf-8');
+var tasks = '';
 
 switch(command) {
 	case 'help': default :
@@ -18,7 +18,10 @@ switch(command) {
 		addTask(string);
 		break;
 	case 'update':
-		updateTask(string , altString);
+		editTask(string , altString);
+		break;
+	case 'delete':
+		editTask(string , altString);
 		break;
 	case 'reset':
 		reset();
@@ -30,31 +33,45 @@ function showHelp(){
 }
 
 function addTask(string){
+	checkForFile();
 	string = string.toLowerCase();
- 	fs.appendFile('tasks.txt', '\n'+string , (err) => {
-  	if (err) throw err; 
+ 	fs.appendFile('tasks.txt', '\n'+string , function (err) {
+        if (err) {
+            return console.log("Error writing file: " + err);
+        } 
   });
-
 }
+
 function listAll(){
+	checkForFile();
 	if (tasks !== ''){
-	console.log(tasks);
+		console.log(tasks);
 	}
 	else {
 		console.log(`no toDo's yet`);
 	}
 }
-function updateTask(string , altString){
-	string = string.toLowerCase();
-	altString = altString.toLowerCase();
-	tasks = tasks.replace(string, altString);
-	fs.writeFile('./tasks.txt',tasks, function (err) {
-        if (err) {
-            return console.log("Error writing file: " + err);
-        }
-    });
 
-
+function editTask(string , altString){
+	checkForFile();
+	if(string !== undefined){
+		string = string.toLowerCase();
+	}
+	else{
+		console.log("please enter a task to be deleted") 
+	}	
+	if (altString !== undefined) {
+		altString = altString.toLowerCase();
+		tasks = tasks.replace(string, altString);
+	}
+	else {
+		tasks = tasks.replace(string +'\n' , '');
+	}
+fs.writeFile('./tasks.txt',tasks, function (err) {
+	        if (err) {
+	            return console.log("Error writing file: " + err);
+	        }
+	    });
 }
 function reset(){
 	fs.writeFile('./tasks.txt','', function (err) {
@@ -62,4 +79,21 @@ function reset(){
             return console.log("Error writing file: " + err);
         }
     });
+}
+
+function checkForFile(){
+	 try{
+      tasks = fs.readFileSync('./tasks.txt','utf-8'); 
+    }
+    catch(error){
+        if(error){
+            if (error.code === 'ENOENT'){
+            	fs.writeFile('./tasks.txt', '','utf-8' )
+             }
+        }
+        else {
+            console.log(error.message);
+        }
+    }
+
 }
