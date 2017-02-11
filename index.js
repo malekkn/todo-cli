@@ -34,12 +34,17 @@ function showHelp(){
 
 function addTask(string){
 	checkForFile();
-	string = string.toLowerCase();
- 	fs.appendFile('tasks.txt', '\n'+string , function (err) {
-        if (err) {
-            return console.log("Error writing file: " + err);
-        } 
-  });
+	if(string !== undefined){
+		string = string.toLowerCase();
+ 		fs.appendFile('tasks.txt', '\n'+string , function (err) {
+        	if (err) {
+            	return console.log("Error writing file: " + err);
+        	} 
+  		});
+ 	}
+ 	else{
+		console.log("please enter a task") 
+	}
 }
 
 function listAll(){
@@ -54,19 +59,17 @@ function listAll(){
 
 function editTask(string , altString){
 	checkForFile();
-	if(string !== undefined){
+	if(string !== undefined && altString !== undefined){
 		string = string.toLowerCase();
+		altString = altString.toLowerCase();
+		tasks = tasks.replace(string, altString);
+	}else if (altString === undefined){
+		tasks = tasks.replace(string +'\n' , '');
 	}
 	else{
 		console.log("please enter a task to be deleted") 
 	}	
-	if (altString !== undefined) {
-		altString = altString.toLowerCase();
-		tasks = tasks.replace(string, altString);
-	}
-	else {
-		tasks = tasks.replace(string +'\n' , '');
-	}
+	
 fs.writeFile('./tasks.txt',tasks, function (err) {
 	        if (err) {
 	            return console.log("Error writing file: " + err);
