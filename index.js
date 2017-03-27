@@ -38,7 +38,7 @@ function addTask(string){
 		string = string.toLowerCase();
  		fs.appendFile('tasks.txt', '\n'+string , function (err) {
         	if (err) {
-            	return console.log("Error writing file: " + err);
+				return console.log("Error writing file: " + err);
         	} 
   		});
  	}
@@ -85,17 +85,16 @@ function reset(){
 }
 
 function checkForFile(){
-	 try{
-      tasks = fs.readFileSync('./tasks.txt','utf-8'); 
-    }
-    catch(error){
-        if(error){
-            if (error.code === 'ENOENT'){
-            	fs.writeFile('./tasks.txt', '','utf-8' )
-             }
-        }
-        else {
-            console.log(error.message);
+	try{
+		tasks = fs.readFileSync('./tasks.txt','utf-8');
+	}
+	catch(error){
+		if(error){
+			if (error.code === 'ENOENT'){
+				fs.writeFile('./tasks.txt', '','utf-8');
+			}
+		} else {
+			console.log(error.message);
         }
     }
 
